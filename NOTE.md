@@ -81,3 +81,64 @@ This command is run repeatedly during development because it:
 
 **Why it saves time:**
 Instead of running `git status`, `git log`, remembering the route structure, and manually creating boilerplate, this one command does it all—making it natural to run frequently during feature development.
+
+---
+
+# Hook Configuration
+
+## Hook: Auto-Lint on Code Edits
+
+**Configuration:** `.claude/settings.json`
+
+**What hook did you set?**
+`npm run lint` — auto-lint the code whenever a file is edited
+
+**Does it react or prevent?**
+**REACT** (PostToolUse event) — runs AFTER an edit or write is complete, not before. This ensures the code is already saved, then linting runs to check and fix style issues automatically.
+
+**On which event?**
+**PostToolUse** — reactive hook that fires after the Edit or Write tools finish
+
+**Matcher:** `Edit|Write` — triggers on both code edits and file writes
+
+**Why it's useful:**
+- **Auto-cleanup** — linting happens automatically without manual `npm run lint` commands
+- **Consistent style** — every edit triggers a style check, keeping code uniform throughout development
+- **Saves time** — no context switch to run linting; the hook does it in the background
+- **Catches issues early** — lint errors are surfaced immediately after changes, not at commit time
+
+**How it works:**
+1. User edits a file with the Edit tool
+2. Edit completes (file is saved)
+3. Hook fires: `PostToolUse` event is triggered
+4. `npm run lint` runs automatically
+5. Any linting issues are fixed or reported
+
+**Example workflow:**
+```
+User: Edit routes/users.js (fix a bug)
+  → Edit tool completes
+  → PostToolUse:Edit hook fires
+  → npm run lint runs automatically
+  → Code is checked/formatted
+  → User continues working with clean code
+```
+
+**Configuration format:**
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npm run lint"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
