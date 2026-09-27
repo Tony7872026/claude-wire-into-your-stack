@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "filesystem": [
+      "read_file",
+      "list_directory"
+    ]
+  }
+}
