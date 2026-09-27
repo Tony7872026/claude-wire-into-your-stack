@@ -142,3 +142,45 @@ User: Edit routes/users.js (fix a bug)
   }
 }
 ```
+
+---
+
+# Headless Task Execution
+
+## Headless Run: Test Suite Validation
+
+**What did you run headless?**
+Ran the full test suite with `npm test` via Claude in headless mode (`-p` flag), allowing only the Bash tool.
+
+**What did you lock down?**
+Restricted to **Bash tool only** — no Edit, Write, Read, or other tools allowed. The --allowedTools flag ensured:
+- ❌ NO code edits possible (Edit blocked)
+- ❌ NO file writes possible (Write blocked)  
+- ❌ NO file reads possible (beyond command output)
+- ✅ ONLY: Shell execution for tests
+
+**Why this set is safe:**
+- **Read-only execution** — running tests doesn't change code
+- **Deterministic** — tests just verify existing behavior
+- **No side effects** — npm test is contained, no external writes
+- **Easily auditable** — Bash tool is the only permission needed
+- **Fail-safe** — if tests fail, nothing broke; only output is reported
+
+**Command executed:**
+```bash
+echo "Run the test suite for the Course API with npm test and report the results." | claude -p --allowedTools Bash
+```
+
+**Results:**
+✅ All 5 tests passed
+- GET /users returns the seeded list
+- GET /users/:id returns 404 for a missing user
+- POST /users creates a user
+- PUT /users/:id updates an existing user
+- PUT /users/:id returns 404 for a missing user
+
+**Why this pattern is valuable:**
+- **Zero human supervision needed** — can run in CI/CD pipelines
+- **Tight security** — only one tool allowed, can't go rogue
+- **Verifiable** — exact tools locked down and documented
+- **Repeatable** — same command, same result, no surprises
