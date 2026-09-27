@@ -19,7 +19,7 @@ The permission rule restricts the filesystem server to **read-only operations**:
 This prevents any write, delete, or modification operations, keeping the server safe and scoped to information retrieval.
 
 ## Configuration Location
-- Server definition: `.claude/.mcp.json`
+- Server definition: `.mcp.json`
 - Permission rules: `.claude/settings.json`
 - Root path: project root (`.`) — exposes all project files
 
