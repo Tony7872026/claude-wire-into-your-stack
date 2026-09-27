@@ -48,3 +48,36 @@ Two project skills teach Claude about core conventions used in this repository.
 **How it fires:** Triggered when handling errors, returning error responses, reviewing error handling code, working with error formats, or checking API error behavior. Keywords: "error response", "error handling", "return error", "404", "400", "error message", "error format".
 
 **Example trigger:** User asks "I'm adding a delete endpoint. If the user doesn't exist, what should the error response look like?" → skill automatically provides the error JSON shape, 404 status code, and implementation pattern.
+
+---
+
+# Custom Command
+
+## Command: Summarize Changes (`.claude/commands/summarize-changes.md`)
+
+**What command did you add?**
+`summarize-changes` — a dual-mode command that summarizes repo changes and optionally scaffolds new routes.
+
+**What makes it worth a shortcut?**
+This command is run repeatedly during development because it:
+1. **Quick status check** — instantly see what changed (commits, files, staged vs unstaged) without manual git commands
+2. **Dual functionality** — one shortcut handles two tasks:
+   - `summarize-changes` (no input) → summarize all recent changes in the repo
+   - `summarize-changes products` (with route name) → summarize changes + scaffold a new `routes/products.js` with full boilerplate
+3. **Follows project conventions** — the scaffold automatically includes:
+   - Express router setup matching the project's style
+   - Error handling with the standard `{ "error": "message" }` format
+   - Example GET, GET/:id, and POST endpoints
+   - TODO comments for customization points
+   - Reminder to wire up store methods and tests
+
+**How it works:**
+- **Mode 1 (no args):** Runs `git log`, `git diff --stat` to show branch state, recent commits, and what files changed
+- **Mode 2 (with $ARGUMENTS):** Does mode 1 + generates a new route file with the argument as the resource name
+
+**Example:**
+- `/summarize-changes` → summarizes the 3 commits we just made (MCP server, skills, command)
+- `/summarize-changes articles` → summarizes changes + creates `routes/articles.js` scaffold ready to customize
+
+**Why it saves time:**
+Instead of running `git status`, `git log`, remembering the route structure, and manually creating boilerplate, this one command does it all—making it natural to run frequently during feature development.
